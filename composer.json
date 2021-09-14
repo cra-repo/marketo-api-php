@@ -1,0 +1,24 @@
+{
+    "name": "cra/marketo-api",
+    "description": "Unofficial Marketo API PHP library.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Cra\\MarketoApi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Konstantin Gusev",
+            "email": "guvkon.net@icloud.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.0",
+        "php": "^7.4 | ^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    }
+}
