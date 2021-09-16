@@ -31,21 +31,11 @@ class SmartCampaignEndpoint implements EndpointInterface
      */
     public function queryById($id): ?object
     {
-        $response = $this->client->request(
-            'GET',
-            self::PATH_PREFIX . "/smartCampaign/$id.json"
-        );
-        if (!is_object($response) || empty($response->success)) {
-            throw new Exception(
-                sprintf(
-                    'Error querying by ID. Errors: %s',
-                    var_export($response->errors ?? [])
-                )
-            );
-        }
+        $response = $this->client->get(self::PATH_PREFIX . "/smartCampaign/$id.json");
+        $response->checkIsSuccess();
 
-        return !empty($response->result) && is_array($response->result) ?
-            new SmartCampaign($response->result[0]) : null;
+        return $response->isResultValid() ?
+            new SmartCampaign($response->result()[0]) : null;
     }
 
     /**
@@ -59,21 +49,13 @@ class SmartCampaignEndpoint implements EndpointInterface
      */
     public function queryByName(string $name): ?object
     {
-        $response = $this->client->request(
-            'GET',
+        $response = $this->client->get(
             self::PATH_PREFIX . '/smartCampaign/byName.json',
             ['query' => ['name' => $name]]
         );
-        if (!is_object($response) || empty($response->success)) {
-            throw new Exception(
-                sprintf(
-                    'Error querying by ID. Errors: %s',
-                    var_export($response->errors ?? [])
-                )
-            );
-        }
+        $response->checkIsSuccess();
 
-        return !empty($response->result) && is_array($response->result) ?
-            new SmartCampaign($response->result[0]) : null;
+        return $response->isResultValid() ?
+            new SmartCampaign($response->result()[0]) : null;
     }
 }

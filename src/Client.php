@@ -9,12 +9,12 @@ use Exception;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
-use Psr\Http\Client\ClientInterface;
+use Psr\Http\Client\ClientInterface as HttpClientInterface;
 
 /**
  * API Client for Marketo.
  */
-class Client
+class Client implements ClientInterface
 {
     private string $restBaseUrl = '';
 
@@ -28,13 +28,10 @@ class Client
 
     private ?DateTime $tokenExpiresAt;
 
-    private ClientInterface $client;
+    private HttpClientInterface $client;
 
     /**
-     * Class constructor.
-     *
-     * @param array{restBaseUrl: string, identityBaseUrl: string, clientId: string, clientSecret: string} $config
-     * @param string $httpClientClass
+     * @inheritDoc
      *
      * @throws Exception
      */
@@ -45,11 +42,8 @@ class Client
     }
 
     /**
-     * Configure client.
+     * @inheritDoc
      *
-     * @param array{restBaseUrl: string, identityBaseUrl: string, clientId: string, clientSecret: string} $config
-     *
-     * @return $this
      * @throws Exception
      */
     public function configure(array $config): self
@@ -88,9 +82,8 @@ class Client
     }
 
     /**
-     * Perform authenticate request.
+     * @inheritDoc
      *
-     * @return $this
      * @throws GuzzleException
      * @throws Exception
      */
@@ -124,9 +117,7 @@ class Client
     }
 
     /**
-     * Check if token has expired.
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function hasTokenExpired(): bool
     {
@@ -138,17 +129,48 @@ class Client
     }
 
     /**
-     * Do API request.
+     * @inheritDoc
      *
-     * @param string $method
-     * @param string $uri
-     * @param array $options
+     * @throws GuzzleException
+     */
+    public function ensureTokenValid(): self
+    {
+        if ($this->hasTokenExpired()) {
+            $this->authenticate();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
      *
-     * @return mixed
      * @throws GuzzleException
      * @throws Exception
      */
-    public function request(string $method, string $uri, array $options = [])
+    public function get(string $uri, array $options = []): Response
+    {
+        return $this->request('GET', $uri, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    public function post(string $uri, array $options = []): Response
+    {
+        return $this->request('POST', $uri, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    public function request(string $method, string $uri, array $options = []): Response
     {
         if (empty($this->accessToken)) {
             throw new Exception('Missing token. Use authenticate method first.');
@@ -170,6 +192,6 @@ class Client
             );
         }
 
-        return json_decode((string)$response->getBody());
+        return new Response(json_decode((string)$response->getBody()));
     }
 }
