@@ -9,6 +9,7 @@ use Exception;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use Psr\Http\Client\ClientInterface;
 
 /**
  * API Client for Marketo.
@@ -27,16 +28,20 @@ class Client
 
     private ?DateTime $tokenExpiresAt;
 
+    private ClientInterface $client;
+
     /**
      * Class constructor.
      *
      * @param array{restBaseUrl: string, identityBaseUrl: string, clientId: string, clientSecret: string} $config
+     * @param string $httpClientClass
      *
      * @throws Exception
      */
-    public function __construct(array $config)
+    public function __construct(array $config, string $httpClientClass = HttpClient::class)
     {
         $this->configure($config);
+        $this->client = new $httpClientClass();
     }
 
     /**
@@ -91,8 +96,7 @@ class Client
      */
     public function authenticate(): self
     {
-        $client = new HttpClient(['base_uri' => $this->identityBaseUrl]);
-        $response = $client->get('/oauth/token', [
+        $response = $this->client->get($this->identityBaseUrl . '/oauth/token', [
             'query' => [
                 'grant_type' => 'client_credentials',
                 'client_id' => $this->clientId,
@@ -124,7 +128,7 @@ class Client
      *
      * @return bool
      */
-    private function hasTokenExpired(): bool
+    public function hasTokenExpired(): bool
     {
         if (empty($this->accessToken) || empty($this->tokenExpiresAt)) {
             return true;
@@ -144,7 +148,7 @@ class Client
      * @throws GuzzleException
      * @throws Exception
      */
-    protected function request(string $method, string $uri, array $options)
+    public function request(string $method, string $uri, array $options = [])
     {
         if (empty($this->accessToken)) {
             throw new Exception('Missing token. Use authenticate method first.');
@@ -153,13 +157,9 @@ class Client
             throw new Exception('Token has expired!');
         }
 
-        $client = new HttpClient([
-                                     'base_uri' => $this->restBaseUrl,
-                                     'headers' => [
-                                         'Authorization' => "Bearer $this->accessToken",
-                                     ],
-                                 ]);
-        $response = $client->request($method, $uri, $options);
+        $options['headers'] = $options['headers'] ?? [];
+        $options['headers']['Authorization'] = "Bearer $this->accessToken";
+        $response = $this->client->request($method, $this->restBaseUrl . $uri, $options);
         if ($response->getStatusCode() !== 200) {
             throw new Exception(
                 sprintf(
