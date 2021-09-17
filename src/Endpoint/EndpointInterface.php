@@ -8,5 +8,10 @@ use Cra\MarketoApi\ClientInterface;
 
 interface EndpointInterface
 {
+    /**
+     * Class constructor.
+     *
+     * @param ClientInterface $client
+     */
     public function __construct(ClientInterface $client);
 }

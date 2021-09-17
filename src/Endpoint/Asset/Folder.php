@@ -16,6 +16,9 @@ class Folder implements EndpointInterface
 
     private ClientInterface $client;
 
+    /**
+     * @inheritDoc
+     */
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
