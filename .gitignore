@@ -2,5 +2,11 @@
 *~
 .DS_Store
 
+# IDE files
+.idea
+
 # Dependencies
 vendor
+
+# Miscelanious
+/index.php
