@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Cra\MarketoApi\Asset;
+namespace Cra\MarketoApi\Endpoint\Asset;
 
-use Cra\MarketoApi\Client;
-use Cra\MarketoApi\EndpointInterface;
+use Cra\MarketoApi\ClientInterface;
+use Cra\MarketoApi\Endpoint\EndpointInterface;
+use Cra\MarketoApi\Entity\Asset\SmartCampaign as SmartCampaignEntity;
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
 
-class SmartCampaignEndpoint implements EndpointInterface
+class SmartCampaign implements EndpointInterface
 {
     private const PATH_PREFIX = '/asset/v1';
 
-    private Client $client;
+    private ClientInterface $client;
 
-    public function __construct(Client $client)
+    public function __construct(ClientInterface $client)
     {
         $this->client = $client;
     }
@@ -24,30 +24,28 @@ class SmartCampaignEndpoint implements EndpointInterface
      * Query Smart Campaign by ID.
      *
      * @param string|int $id
-     * @return object|null
+     * @return SmartCampaignEntity|null
      *
-     * @throws GuzzleException
      * @throws Exception
      */
-    public function queryById($id): ?object
+    public function queryById($id): ?SmartCampaignEntity
     {
         $response = $this->client->get(self::PATH_PREFIX . "/smartCampaign/$id.json");
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
-            new SmartCampaign($response->result()[0]) : null;
+            new SmartCampaignEntity($response->result()[0]) : null;
     }
 
     /**
      * Query Smart Campaign by name.
      *
      * @param string $name
-     * @return object|null
+     * @return SmartCampaignEntity|null
      *
-     * @throws GuzzleException
      * @throws Exception
      */
-    public function queryByName(string $name): ?object
+    public function queryByName(string $name): ?SmartCampaignEntity
     {
         $response = $this->client->get(
             self::PATH_PREFIX . '/smartCampaign/byName.json',
@@ -56,6 +54,6 @@ class SmartCampaignEndpoint implements EndpointInterface
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
-            new SmartCampaign($response->result()[0]) : null;
+            new SmartCampaignEntity($response->result()[0]) : null;
     }
 }

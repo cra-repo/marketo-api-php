@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Cra\MarketoApi\Asset;
+namespace Cra\MarketoApi\Endpoint\Asset;
 
 use Cra\MarketoApi\ClientInterface;
-use Cra\MarketoApi\EndpointInterface;
+use Cra\MarketoApi\Endpoint\EndpointInterface;
+use Cra\MarketoApi\Entity\Asset\Folder as FolderEntity;
+use Cra\MarketoApi\Entity\Asset\FolderId;
 use Exception;
 
-class FolderEndpoint implements EndpointInterface
+class Folder implements EndpointInterface
 {
     private const PATH_PREFIX = '/asset/v1';
 
@@ -23,29 +25,29 @@ class FolderEndpoint implements EndpointInterface
      * Query Folder by ID.
      *
      * @param int $id
-     * @return object|null
+     * @return FolderEntity|null
      *
      * @throws Exception
      */
-    public function queryById(int $id): ?Folder
+    public function queryById(int $id): ?FolderEntity
     {
         $response = $this->client
             ->ensureTokenValid()
             ->get(self::PATH_PREFIX . "/folder/$id.json");
         $response->checkIsSuccess();
 
-        return $response->isResultValid() ? new Folder($response->result()[0]) : null;
+        return $response->isResultValid() ? new FolderEntity($response->result()[0]) : null;
     }
 
     /**
      * Query Folder by name.
      *
      * @param string $name
-     * @return object|null
+     * @return FolderEntity|null
      *
      * @throws Exception
      */
-    public function queryByName(string $name): ?Folder
+    public function queryByName(string $name): ?FolderEntity
     {
         $response = $this->client
             ->ensureTokenValid()
@@ -55,14 +57,14 @@ class FolderEndpoint implements EndpointInterface
             );
         $response->checkIsSuccess();
 
-        return $response->isResultValid() ? new Folder($response->result()[0]) : null;
+        return $response->isResultValid() ? new FolderEntity($response->result()[0]) : null;
     }
 
     /**
      * Browse Folder for children Folders.
      *
      * @param FolderId $parent
-     * @return Folder[]
+     * @return FolderEntity[]
      *
      * @throws Exception
      */
@@ -77,7 +79,7 @@ class FolderEndpoint implements EndpointInterface
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
-            array_map(static fn(object $folder) => new Folder($folder), $response->result()) :
+            array_map(static fn(object $folder) => new FolderEntity($folder), $response->result()) :
             [];
     }
 
@@ -88,10 +90,10 @@ class FolderEndpoint implements EndpointInterface
      * @param FolderId $parent
      * @param string $description
      *
-     * @return Folder
+     * @return FolderEntity
      * @throws Exception
      */
-    public function create(string $name, FolderId $parent, string $description = ''): Folder
+    public function create(string $name, FolderId $parent, string $description = ''): FolderEntity
     {
         $fields = [
             'parent' => $parent->asJson(),
@@ -110,7 +112,7 @@ class FolderEndpoint implements EndpointInterface
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
-        return new Folder($response->result()[0]);
+        return new FolderEntity($response->result()[0]);
     }
 
     /**
@@ -121,7 +123,7 @@ class FolderEndpoint implements EndpointInterface
      * @param string $name
      * @param string $description
      * @param bool|null $isArchive
-     * @return Folder
+     * @return FolderEntity
      *
      * @throws Exception
      */
@@ -131,7 +133,7 @@ class FolderEndpoint implements EndpointInterface
         string $name = '',
         string $description = '',
         ?bool $isArchive = null
-    ): Folder {
+    ): FolderEntity {
         $fields = ['type' => $type];
         if (!empty($name)) {
             $fields['name'] = $name;
@@ -152,7 +154,7 @@ class FolderEndpoint implements EndpointInterface
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
-        return new Folder($response->result()[0]);
+        return new FolderEntity($response->result()[0]);
     }
 
     /**

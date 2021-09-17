@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace Cra\MarketoApi\Asset;
+namespace Cra\MarketoApi\Entity\Asset;
 
 use DateTime;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cra\MarketoApi;
 
 use GuzzleHttp\Client as HttpClient;
