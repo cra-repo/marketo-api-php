@@ -22,11 +22,22 @@ class Response
     /**
      * Get response result.
      *
+     * @param int|null $index Optional index parameter if only a single result is needed.
      * @return mixed
      */
-    public function result()
+    public function result(?int $index = null)
     {
-        return $this->response->result;
+        return null === $index ? $this->response->result : $this->response->result[$index];
+    }
+
+    /**
+     * Get first response result if it is valid or null otherwise.
+     *
+     * @return object|null
+     */
+    public function singleValidResult(): ?object
+    {
+        return $this->isResultValid() ? $this->response->result[0] : null;
     }
 
     /**

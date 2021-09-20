@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Cra\MarketoApi\Endpoint\Asset;
 
-use Cra\MarketoApi\ClientInterface;
 use Cra\MarketoApi\Endpoint\EndpointInterface;
 use Cra\MarketoApi\Entity\Asset\Folder as FolderEntity;
 use Cra\MarketoApi\Entity\Asset\FolderId;
@@ -12,17 +11,7 @@ use Exception;
 
 class Folder implements EndpointInterface
 {
-    private const PATH_PREFIX = '/asset/v1';
-
-    private ClientInterface $client;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
+    use AssetTrait;
 
     /**
      * Query Folder by ID.
@@ -34,12 +23,11 @@ class Folder implements EndpointInterface
      */
     public function queryById(int $id): ?FolderEntity
     {
-        $response = $this->client
-            ->ensureTokenValid()
-            ->get(self::PATH_PREFIX . "/folder/$id.json");
+        $response = $this->get("/folder/$id.json");
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ? new FolderEntity($response->result()[0]) : null;
+        return $result ? new FolderEntity($result) : null;
     }
 
     /**
@@ -52,15 +40,11 @@ class Folder implements EndpointInterface
      */
     public function queryByName(string $name): ?FolderEntity
     {
-        $response = $this->client
-            ->ensureTokenValid()
-            ->get(
-                self::PATH_PREFIX . '/folder/byName.json',
-                ['query' => ['name' => $name]]
-            );
+        $response = $this->get('/folder/byName.json', ['query' => ['name' => $name]]);
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ? new FolderEntity($response->result()[0]) : null;
+        return $result ? new FolderEntity($result) : null;
     }
 
     /**
@@ -73,12 +57,7 @@ class Folder implements EndpointInterface
      */
     public function browse(FolderId $parent): array
     {
-        $response = $this->client
-            ->ensureTokenValid()
-            ->get(
-                self::PATH_PREFIX . '/folders.json',
-                ['query' => ['root' => $parent->asJson()]]
-            );
+        $response = $this->get('/folders.json', ['query' => ['root' => $parent->asJson()]]);
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
@@ -106,16 +85,11 @@ class Folder implements EndpointInterface
             $fields['description'] = $description;
         }
 
-        $response = $this->client
-            ->ensureTokenValid()
-            ->post(
-                self::PATH_PREFIX . '/folders.json',
-                ['form_params' => $fields]
-            );
+        $response = $this->post('/folders.json', ['form_params' => $fields]);
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
-        return new FolderEntity($response->result()[0]);
+        return new FolderEntity($response->result(0));
     }
 
     /**
@@ -148,16 +122,11 @@ class Folder implements EndpointInterface
             $fields['isArchive'] = $isArchive;
         }
 
-        $response = $this->client
-            ->ensureTokenValid()
-            ->post(
-                self::PATH_PREFIX . "/folder/$id.json",
-                ['form_params' => $fields]
-            );
+        $response = $this->post("/folder/$id.json", ['form_params' => $fields]);
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
-        return new FolderEntity($response->result()[0]);
+        return new FolderEntity($response->result(0));
     }
 
     /**
@@ -170,12 +139,10 @@ class Folder implements EndpointInterface
      */
     public function delete(int $id): int
     {
-        $response = $this->client
-            ->ensureTokenValid()
-            ->post(self::PATH_PREFIX . "/folder/$id/delete.json");
+        $response = $this->post("/folder/$id/delete.json");
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
-        return $response->result()[0]->id;
+        return $response->result(0)->id;
     }
 }

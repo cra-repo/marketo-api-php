@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Cra\MarketoApi\Endpoint\Asset;
 
-use Cra\MarketoApi\ClientInterface;
 use Cra\MarketoApi\Endpoint\EndpointInterface;
 use Cra\MarketoApi\Entity\Asset\Email as EmailEntity;
 use Cra\MarketoApi\Entity\Asset\FolderId;
@@ -12,17 +11,7 @@ use Exception;
 
 class Email implements EndpointInterface
 {
-    private const PATH_PREFIX = '/asset/v1';
-
-    private ClientInterface $client;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
+    use AssetTrait;
 
     /**
      * Query Email by ID.
@@ -33,12 +22,11 @@ class Email implements EndpointInterface
      */
     public function queryById(int $id): ?EmailEntity
     {
-        $response = $this->client
-            ->ensureTokenValid()
-            ->get(self::PATH_PREFIX . "/email/$id.json");
+        $response = $this->get("/email/$id.json");
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ? new EmailEntity($response->result()[0]) : null;
+        return $result ? new EmailEntity($result) : null;
     }
 
     /**
@@ -56,15 +44,11 @@ class Email implements EndpointInterface
         if ($folder) {
             $query['folder'] = $folder->asJson();
         }
-        $response = $this->client
-            ->ensureTokenValid()
-            ->get(
-                self::PATH_PREFIX . '/email/byName.json',
-                ['query' => $query]
-            );
+        $response = $this->get('/email/byName.json', ['query' => $query]);
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ? new EmailEntity($response->result()[0]) : null;
+        return $result ? new EmailEntity($result) : null;
     }
 
     /**
@@ -90,12 +74,7 @@ class Email implements EndpointInterface
         if (!empty($filters['offset'])) {
             $query['offset'] = $filters['offset'];
         }
-        $response = $this->client
-            ->ensureTokenValid()
-            ->get(
-                self::PATH_PREFIX . '/emails.json',
-                ['query' => $query]
-            );
+        $response = $this->get('/emails.json', ['query' => $query]);
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?

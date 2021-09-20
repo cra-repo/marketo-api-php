@@ -4,87 +4,12 @@ declare(strict_types=1);
 
 namespace Cra\MarketoApi\Entity\Asset;
 
+use Cra\MarketoApi\Entity\ApiTrait;
 use Cra\MarketoApi\Entity\TypeValue;
-use DateTime;
 
 class Email
 {
-    private object $apiObject;
-
-    public function __construct(object $apiObject)
-    {
-        $this->apiObject = $apiObject;
-        // Example:
-        // {
-        //    "id":1356,
-        //    "name":"sakZxhxkwV",
-        //    "description":"sample description",
-        //    "createdAt":"2014-12-05T02:06:21Z+0000",
-        //    "updatedAt":"2014-12-05T02:06:21Z+0000",
-        //    "url": null,
-        //    "subject":{
-        //       "type":"Text",
-        //       "value":"sample subject"
-        //    },
-        //    "fromName":{
-        //       "type":"Text",
-        //       "value":"RBxEtmdQZz"
-        //    },
-        //    "fromEmail":null,
-        //    "replyEmail":{
-        //       "type":"Text",
-        //       "value":"Qlikf@testmail.com"
-        //    },
-        //    "folder":{
-        //       "type":"folder",
-        //       "value":10421,
-        //       "folderName": "Social Media"
-        //    },
-        //    "operational":false,
-        //    "textOnly":false,
-        //    "publishToMSI":false,
-        //    "webView":false,
-        //    "status":false,
-        //    "template":338,
-        //    "workspace":"Default",
-        //    "version": 2,
-        //    "autoCopyToText": true,
-        //    "ccFields": [
-        //       {
-        //         "attributeId": "157",
-        //         "objectName": "lead",
-        //         "displayName": "Lead Owner Email Address",
-        //         "apiName": null
-        //       }
-        //     ],
-        //    "preHeader": "My awesome preheader!"
-        // }
-    }
-
-    public function id(): int
-    {
-        return $this->apiObject->id;
-    }
-
-    public function name(): string
-    {
-        return $this->apiObject->name;
-    }
-
-    public function description(): string
-    {
-        return $this->apiObject->description;
-    }
-
-    public function createdAt(): DateTime
-    {
-        return new DateTime($this->apiObject->createdAt);
-    }
-
-    public function updatedAt(): DateTime
-    {
-        return new DateTime($this->apiObject->updatedAt);
-    }
+    use ApiTrait;
 
     public function url(): ?string
     {

@@ -1,41 +1,14 @@
 <?php
 
-/** @noinspection PhpUnhandledExceptionInspection */
-
 declare(strict_types=1);
 
 namespace Cra\MarketoApi\Entity\Asset;
 
-use DateTime;
+use Cra\MarketoApi\Entity\ApiTrait;
 
 class Folder
 {
-    private object $apiObject;
-
-    public function __construct(object $apiObject)
-    {
-        $this->apiObject = $apiObject;
-    }
-
-    public function name(): string
-    {
-        return $this->apiObject->name;
-    }
-
-    public function description(): string
-    {
-        return $this->apiObject->description;
-    }
-
-    public function createdAt(): DateTime
-    {
-        return new DateTime($this->apiObject->createdAt);
-    }
-
-    public function updatedAt(): DateTime
-    {
-        return new DateTime($this->apiObject->updatedAt);
-    }
+    use ApiTrait;
 
     public function url(): ?string
     {
@@ -80,10 +53,5 @@ class Folder
     public function workspace(): string
     {
         return $this->apiObject->workspace;
-    }
-
-    public function id(): int
-    {
-        return $this->apiObject->id;
     }
 }

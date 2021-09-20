@@ -4,21 +4,13 @@ declare(strict_types=1);
 
 namespace Cra\MarketoApi\Endpoint\Asset;
 
-use Cra\MarketoApi\ClientInterface;
 use Cra\MarketoApi\Endpoint\EndpointInterface;
 use Cra\MarketoApi\Entity\Asset\SmartCampaign as SmartCampaignEntity;
 use Exception;
 
 class SmartCampaign implements EndpointInterface
 {
-    private const PATH_PREFIX = '/asset/v1';
-
-    private ClientInterface $client;
-
-    public function __construct(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
+    use AssetTrait;
 
     /**
      * Query Smart Campaign by ID.
@@ -30,11 +22,11 @@ class SmartCampaign implements EndpointInterface
      */
     public function queryById($id): ?SmartCampaignEntity
     {
-        $response = $this->client->get(self::PATH_PREFIX . "/smartCampaign/$id.json");
+        $response = $this->get("/smartCampaign/$id.json");
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ?
-            new SmartCampaignEntity($response->result()[0]) : null;
+        return $result ? new SmartCampaignEntity($result) : null;
     }
 
     /**
@@ -47,13 +39,10 @@ class SmartCampaign implements EndpointInterface
      */
     public function queryByName(string $name): ?SmartCampaignEntity
     {
-        $response = $this->client->get(
-            self::PATH_PREFIX . '/smartCampaign/byName.json',
-            ['query' => ['name' => $name]]
-        );
+        $response = $this->get('/smartCampaign/byName.json', ['query' => ['name' => $name]]);
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ?
-            new SmartCampaignEntity($response->result()[0]) : null;
+        return $result ? new SmartCampaignEntity($result) : null;
     }
 }
