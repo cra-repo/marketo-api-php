@@ -14,7 +14,7 @@ class Response
     public function __construct($response)
     {
         if (!is_object($response)) {
-            throw new InvalidArgumentException(sprintf('Invalid API response: %s', var_export($response)));
+            throw new InvalidArgumentException(sprintf('Invalid API response: %s', var_export($response, true)));
         }
         $this->response = $response;
     }
@@ -51,7 +51,7 @@ class Response
             throw new Exception(
                 sprintf(
                     'Errors during Folder API call: %s',
-                    var_export($this->response->errors ?? [])
+                    var_export($this->response->errors ?? [], true)
                 )
             );
         }
@@ -78,7 +78,7 @@ class Response
             throw new Exception(
                 sprintf(
                     'Invalid response result: %s',
-                    var_export($this->response->result ?? null)
+                    var_export($this->response->result ?? null, true)
                 )
             );
         }

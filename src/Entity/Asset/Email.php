@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Cra\MarketoApi\Entity\Asset;
 
 use Cra\MarketoApi\Entity\ApiTrait;
-use Cra\MarketoApi\Entity\TypeValue;
+use Cra\MarketoApi\Entity\GenericValue;
 
 class Email
 {
@@ -16,31 +16,31 @@ class Email
         return $this->apiObject->url ?? null;
     }
 
-    public function subject(): ?TypeValue
+    public function subject(): ?GenericValue
     {
         return $this->apiObject->subject ?
-            new TypeValue($this->apiObject->subject) :
+            new GenericValue($this->apiObject->subject) :
             null;
     }
 
-    public function fromName(): ?TypeValue
+    public function fromName(): ?GenericValue
     {
         return $this->apiObject->fromName ?
-            new TypeValue($this->apiObject->fromName) :
+            new GenericValue($this->apiObject->fromName) :
             null;
     }
 
-    public function fromEmail(): ?TypeValue
+    public function fromEmail(): ?GenericValue
     {
         return $this->apiObject->fromEmail ?
-            new TypeValue($this->apiObject->fromEmail) :
+            new GenericValue($this->apiObject->fromEmail) :
             null;
     }
 
-    public function replyEmail(): ?TypeValue
+    public function replyEmail(): ?GenericValue
     {
         return $this->apiObject->replyEmail ?
-            new TypeValue($this->apiObject->replyEmail) :
+            new GenericValue($this->apiObject->replyEmail) :
             null;
     }
 

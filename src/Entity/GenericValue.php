@@ -2,7 +2,7 @@
 
 namespace Cra\MarketoApi\Entity;
 
-class TypeValue
+class GenericValue
 {
     private object $apiObject;
 
