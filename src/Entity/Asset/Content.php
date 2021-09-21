@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cra\MarketoApi\Entity\Asset;
 
 use Cra\MarketoApi\Entity\GenericValue;
