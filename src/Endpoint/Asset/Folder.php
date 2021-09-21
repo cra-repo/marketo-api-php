@@ -34,13 +34,21 @@ class Folder implements EndpointInterface
      * Query Folder by name.
      *
      * @param string $name
+     * @param array{type: string, root: int, workSpace: string} $optional
      * @return Entity|null
      *
      * @throws Exception
+     * @link https://developers.marketo.com/rest-api/endpoint-reference/asset-endpoint-reference/#!/Folders/getFolderByNameUsingGET
      */
-    public function queryByName(string $name): ?Entity
+    public function queryByName(string $name, array $optional = []): ?Entity
     {
-        $response = $this->get('/folder/byName.json', ['query' => ['name' => $name]]);
+        $query = ['name' => $name];
+        foreach (['type', 'root', 'workSpace'] as $field) {
+            if (isset($optional[$field])) {
+                $query[$field] = $optional[$field];
+            }
+        }
+        $response = $this->get('/folder/byName.json', ['query' => $query]);
         $response->checkIsSuccess();
         $result = $response->singleValidResult();
 
