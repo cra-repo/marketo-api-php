@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Cra\MarketoApi\Endpoint\Asset;
 
 use Cra\MarketoApi\Endpoint\EndpointInterface;
-use Cra\MarketoApi\Entity\Asset\Folder as FolderEntity;
+use Cra\MarketoApi\Entity\Asset\Folder as Entity;
 use Cra\MarketoApi\Entity\Asset\FolderId;
 use Exception;
 
@@ -17,41 +17,41 @@ class Folder implements EndpointInterface
      * Query Folder by ID.
      *
      * @param int $id
-     * @return FolderEntity|null
+     * @return Entity|null
      *
      * @throws Exception
      */
-    public function queryById(int $id): ?FolderEntity
+    public function queryById(int $id): ?Entity
     {
         $response = $this->get("/folder/$id.json");
         $response->checkIsSuccess();
         $result = $response->singleValidResult();
 
-        return $result ? new FolderEntity($result) : null;
+        return $result ? new Entity($result) : null;
     }
 
     /**
      * Query Folder by name.
      *
      * @param string $name
-     * @return FolderEntity|null
+     * @return Entity|null
      *
      * @throws Exception
      */
-    public function queryByName(string $name): ?FolderEntity
+    public function queryByName(string $name): ?Entity
     {
         $response = $this->get('/folder/byName.json', ['query' => ['name' => $name]]);
         $response->checkIsSuccess();
         $result = $response->singleValidResult();
 
-        return $result ? new FolderEntity($result) : null;
+        return $result ? new Entity($result) : null;
     }
 
     /**
      * Browse Folder for children Folders.
      *
      * @param FolderId $parent
-     * @return FolderEntity[]
+     * @return Entity[]
      *
      * @throws Exception
      */
@@ -61,7 +61,7 @@ class Folder implements EndpointInterface
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
-            array_map(static fn(object $folder) => new FolderEntity($folder), $response->result()) :
+            array_map(static fn(object $folder) => new Entity($folder), $response->result()) :
             [];
     }
 
@@ -72,10 +72,10 @@ class Folder implements EndpointInterface
      * @param FolderId $parent
      * @param string $description
      *
-     * @return FolderEntity
+     * @return Entity
      * @throws Exception
      */
-    public function create(string $name, FolderId $parent, string $description = ''): FolderEntity
+    public function create(string $name, FolderId $parent, string $description = ''): Entity
     {
         $fields = [
             'parent' => $parent->asJson(),
@@ -89,7 +89,7 @@ class Folder implements EndpointInterface
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
-        return new FolderEntity($response->result(0));
+        return new Entity($response->result(0));
     }
 
     /**
@@ -100,7 +100,7 @@ class Folder implements EndpointInterface
      * @param string $name
      * @param string $description
      * @param bool|null $isArchive
-     * @return FolderEntity
+     * @return Entity
      *
      * @throws Exception
      */
@@ -110,7 +110,7 @@ class Folder implements EndpointInterface
         string $name = '',
         string $description = '',
         ?bool $isArchive = null
-    ): FolderEntity {
+    ): Entity {
         $fields = ['type' => $type];
         if (!empty($name)) {
             $fields['name'] = $name;
@@ -126,7 +126,7 @@ class Folder implements EndpointInterface
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
-        return new FolderEntity($response->result(0));
+        return new Entity($response->result(0));
     }
 
     /**

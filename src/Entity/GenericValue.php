@@ -20,4 +20,9 @@ class GenericValue
     {
         return $this->apiObject->value;
     }
+
+    public function asJson(): string
+    {
+        return json_encode($this->apiObject);
+    }
 }

@@ -3,7 +3,7 @@
 namespace Cra\MarketoApi\Endpoint\Asset;
 
 use Cra\MarketoApi\Endpoint\EndpointInterface;
-use Cra\MarketoApi\Entity\Asset\EmailTemplate as EmailTemplateEntity;
+use Cra\MarketoApi\Entity\Asset\EmailTemplate as Entity;
 use Exception;
 
 class EmailTemplate implements EndpointInterface
@@ -14,38 +14,38 @@ class EmailTemplate implements EndpointInterface
      * Query Email Template by ID.
      *
      * @param int $id
-     * @return EmailTemplateEntity|null
+     * @return Entity|null
      * @throws Exception
      */
-    public function queryById(int $id): ?EmailTemplateEntity
+    public function queryById(int $id): ?Entity
     {
         $response = $this->get("/emailTemplate/$id.json");
         $response->checkIsSuccess();
         $result = $response->singleValidResult();
 
-        return $result ? new EmailTemplateEntity($result) : null;
+        return $result ? new Entity($result) : null;
     }
 
     /**
      * Query Email Template by name.
      *
      * @param string $name
-     * @return EmailTemplateEntity|null
+     * @return Entity|null
      * @throws Exception
      */
-    public function queryByName(string $name): ?EmailTemplateEntity
+    public function queryByName(string $name): ?Entity
     {
         $response = $this->get('/emailTemplate/byName.json', ['query' => ['name' => $name]]);
         $response->checkIsSuccess();
         $result = $response->singleValidResult();
 
-        return $result ? new EmailTemplateEntity($result) : null;
+        return $result ? new Entity($result) : null;
     }
 
     /**
      * Browse all Email Templates.
      *
-     * @return EmailTemplateEntity[]
+     * @return Entity[]
      * @throws Exception
      */
     public function browse(): array
@@ -54,7 +54,7 @@ class EmailTemplate implements EndpointInterface
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
-            array_map(static fn(object $template) => new EmailTemplateEntity($template), $response->result()) :
+            array_map(static fn(object $template) => new Entity($template), $response->result()) :
             [];
     }
 }
