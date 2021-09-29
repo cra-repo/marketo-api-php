@@ -41,4 +41,9 @@ trait ApiTrait
     {
         return new DateTime($this->apiObject->updatedAt);
     }
+
+    public function asJson(): string
+    {
+        return json_encode($this->apiObject);
+    }
 }
