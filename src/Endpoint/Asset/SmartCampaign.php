@@ -51,6 +51,7 @@ class SmartCampaign implements EndpointInterface
     /**
      * Browse for Smart Campaigns.
      *
+     * phpcs:ignore Generic.Files.LineLength.TooLong
      * @param array{earliestUpdatedAt: DateTime, latestUpdatedAt: DateTime, folder: FolderId, maxReturn: int, offset: int, isArchive: bool} $fields
      * @return Entity[]
      *
@@ -59,19 +60,11 @@ class SmartCampaign implements EndpointInterface
     public function browse(array $fields): array
     {
         $query = [];
-        foreach (['earliestUpdatedAt', 'latestUpdatedAt'] as $field) {
-            if (isset($fields[$field])) {
-                $query[$field] = $fields[$field]->format('c');
-            }
-        }
-        if (isset($fields['folder'])) {
-            $query['folder'] = $fields['folder']->asJson();
-        }
-        foreach (['maxReturn', 'offset', 'isActive'] as $field) {
-            if (isset($fields[$field])) {
-                $query[$field] = $fields[$field];
-            }
-        }
+        $this->addFieldsToQuery(
+            $query,
+            ['earliestUpdatedAt', 'latestUpdatedAt', 'folder', 'maxReturn', 'offset', 'isActive'],
+            $fields
+        );
 
         $response = $this->get('/smartCampaigns.json', ['query' => $query]);
         $response->checkIsSuccess();
@@ -116,11 +109,7 @@ class SmartCampaign implements EndpointInterface
     public function update(int $id, array $fields): Entity
     {
         $params = [];
-        foreach (['name', 'description'] as $field) {
-            if (isset($fields[$field])) {
-                $params[$field] = $fields[$field];
-            }
-        }
+        $this->addFieldsToQuery($params, ['name', 'description'], $fields);
 
         $response = $this->post("/smartCampaign/$id.json", ['form_params' => $params]);
         $response->checkIsSuccess();

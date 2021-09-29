@@ -21,7 +21,7 @@ class Channel implements EndpointInterface
     public function browse(array $optional = []): array
     {
         $query = [];
-        $this->addOptionalPaginationFieldsToQuery($query, $optional);
+        $this->addFieldsToQuery($query, ['maxReturn', 'offset'], $optional);
 
         $response = $this->get('/channels.json', $query);
         $response->checkIsSuccess();
@@ -43,7 +43,7 @@ class Channel implements EndpointInterface
     public function queryByName(string $name, array $optional = []): array
     {
         $query = ['name' => $name];
-        $this->addOptionalPaginationFieldsToQuery($query, $optional);
+        $this->addFieldsToQuery($query, ['maxReturn', 'offset'], $optional);
 
         $response = $this->get('/channel/byName.json', $query);
         $response->checkIsSuccess();

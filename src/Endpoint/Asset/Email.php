@@ -49,6 +49,7 @@ class Email implements EndpointInterface
         if ($folder) {
             $query['folder'] = $folder->asJson();
         }
+
         $response = $this->get('/email/byName.json', ['query' => $query]);
         $response->checkIsSuccess();
         $result = $response->singleValidResult();
@@ -67,18 +68,8 @@ class Email implements EndpointInterface
     public function browse(array $filters = []): array
     {
         $query = [];
-        if (!empty($filters['status'])) {
-            $query['status'] = $filters['status'];
-        }
-        if (!empty($filters['folder'])) {
-            $query['folder'] = $filters['folder']->asJson();
-        }
-        if (!empty($filters['maxReturn'])) {
-            $query['maxReturn'] = $filters['maxReturn'];
-        }
-        if (!empty($filters['offset'])) {
-            $query['offset'] = $filters['offset'];
-        }
+        $this->addFieldsToQuery($query, ['status', 'folder', 'maxReturn', 'offset'], $filters);
+
         $response = $this->get('/emails.json', ['query' => $query]);
         $response->checkIsSuccess();
 
@@ -117,6 +108,7 @@ class Email implements EndpointInterface
         if (isset($status)) {
             $query['status'] = $status;
         }
+
         $response = $this->get("/email/$id/content.json", ['query' => $query]);
         $response->checkIsSuccess();
 
@@ -144,11 +136,8 @@ class Email implements EndpointInterface
     public function create(string $name, int $templateId, FolderId $folderId, array $optional = []): Entity
     {
         $params = ['name' => $name, 'folder' => $folderId->asJson(), 'template' => $templateId];
-        foreach (['subject', 'fromName', 'fromEmail', 'replyEmail', 'operational'] as $field) {
-            if (isset($optional[$field])) {
-                $params[$field] = $optional[$field];
-            }
-        }
+        $this->addFieldsToQuery($params, ['subject', 'fromName', 'fromEmail', 'replyEmail', 'operational'], $optional);
+
         $response = $this->post('/emails.json', ['form_params' => $params]);
         $response->checkIsSuccess();
         $response->checkIsResultValid();
@@ -169,14 +158,11 @@ class Email implements EndpointInterface
     public function update(int $id, array $fields = []): Entity
     {
         $params = [];
-        foreach (['name', 'description'] as $field) {
-            if (isset($fields[$field])) {
-                $params[$field] = $fields[$field];
-            }
-        }
+        $this->addFieldsToQuery($params, ['name', 'description'], $fields);
         if (empty($params)) {
             throw new InvalidArgumentException('Missing name and/or description.');
         }
+
         $response = $this->post("/email/$id.json", ['form_params' => $params]);
         $response->checkIsSuccess();
         $response->checkIsResultValid();
@@ -197,21 +183,13 @@ class Email implements EndpointInterface
     public function updateContent(int $id, array $fields = []): int
     {
         $params = [];
-        foreach (['subject', 'fromEmail', 'fromName', 'replyTo'] as $field) {
-            $value = $fields[$field] ?? null;
-            if ($value instanceof Text) {
-                $params[$field] = $value->asJson();
-            } elseif ($value instanceof DynamicContent) {
-                $params[$field] = $value->idAsJson();
-            } elseif (!empty($value)) {
-                throw new InvalidArgumentException("Invalid type for $field.");
-            }
-        }
+        $this->addFieldsToQuery($params, ['subject', 'fromEmail', 'fromName', 'replyTo'], $fields);
         if (empty($params)) {
             throw new InvalidArgumentException(
                 'Missing any of the following fields subject, fromEmail, fromName, replyTo.'
             );
         }
+
         $response = $this->post("/email/$id/content.json", ['form_params' => $params]);
         $response->checkIsSuccess();
         $response->checkIsResultValid();
@@ -241,6 +219,7 @@ class Email implements EndpointInterface
         if (!empty($textValue)) {
             $params['textValue'] = $textValue;
         }
+
         $response = $this->post("/email/$id/content/$htmlId.json", ['form_params' => $params]);
         $response->checkIsSuccess();
         $response->checkIsResultValid();

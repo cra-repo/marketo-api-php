@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Cra\MarketoApi\Endpoint\Asset;
 
 use Cra\MarketoApi\Endpoint\EndpointInterface;
-use Cra\MarketoApi\Entity\Asset\Cost;
 use Cra\MarketoApi\Entity\Asset\FolderId;
 use Cra\MarketoApi\Entity\Asset\Program as Entity;
 use Cra\MarketoApi\Entity\Asset\Tag;
@@ -33,10 +32,9 @@ class Program implements EndpointInterface
     {
         $response = $this->get("/program/$id.json");
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ?
-            new Entity($response->result(0)) :
-            null;
+        return $result ? new Entity($result) : null;
     }
 
     /**
@@ -60,10 +58,9 @@ class Program implements EndpointInterface
         }
         $response = $this->get("/program/byName.json", ['query' => $query]);
         $response->checkIsSuccess();
+        $result = $response->singleValidResult();
 
-        return $response->isResultValid() ?
-            new Entity($response->result(0)) :
-            null;
+        return $result ? new Entity($result) : null;
     }
 
     /**
@@ -88,21 +85,11 @@ class Program implements EndpointInterface
     public function browse(array $optional = []): array
     {
         $query = [];
-        if (isset($optional['status'])) {
-            $query['status'] = $optional['status'];
-        }
-        if (isset($optional['maxReturn'])) {
-            $query['maxReturn'] = $optional['maxReturn'];
-        }
-        if (isset($optional['offset'])) {
-            $query['offset'] = $optional['offset'];
-        }
-        if (isset($optional['earliestUpdatedAt'])) {
-            $query['earliestUpdatedAt'] = $optional['earliestUpdatedAt']->format('c');
-        }
-        if (isset($optional['latestUpdatedAt'])) {
-            $query['latestUpdatedAt'] = $optional['latestUpdatedAt']->format('c');
-        }
+        $this->addFieldsToQuery(
+            $query,
+            ['status', 'maxReturn', 'offset', 'earliestUpdatedAt', 'latestUpdatedAt'],
+            $optional
+        );
 
         $response = $this->get('/programs.json', ['query' => $query]);
         $response->checkIsSuccess();
@@ -124,12 +111,7 @@ class Program implements EndpointInterface
     public function queryByTag(Tag $tag, array $optional = []): array
     {
         $query = ['tagType' => $tag->tagType(), 'tagValue' => $tag->tagValue()];
-        if (isset($optional['maxReturn'])) {
-            $query['maxReturn'] = $optional['maxReturn'];
-        }
-        if (isset($optional['offset'])) {
-            $query['offset'] = $optional['offset'];
-        }
+        $this->addFieldsToQuery($query, ['maxReturn', 'offset'], $optional);
 
         $response = $this->get('/program/byTag.json', ['query' => $query]);
         $response->checkIsSuccess();
@@ -151,7 +133,7 @@ class Program implements EndpointInterface
      *
      * @throws Exception
      */
-    public function create(FolderId $folder, string $name, string $type, string $channel, array $optional = []): Entity // phpcs:ignore Generic.Files.LineLength.TooLong
+    public function create(FolderId $folder, string $name, string $type, string $channel, array $optional = []): Entity
     {
         $params = [
             'folder' => $folder->asJson(),
@@ -159,25 +141,7 @@ class Program implements EndpointInterface
             'type' => $type,
             'channel' => $channel,
         ];
-        if (isset($optional['description'])) {
-            $params['description'] = $optional['description'];
-        }
-        if (isset($optional['costs'])) {
-            $params['costs'] = json_encode(
-                array_map(
-                    static fn(Cost $cost) => $cost->asJson(),
-                    $optional['costs']
-                )
-            );
-        }
-        if (isset($optional['tags'])) {
-            $params['tags'] = json_encode(
-                array_map(
-                    static fn(Tag $tag) => $tag->idAsJson(),
-                    $optional['tags']
-                )
-            );
-        }
+        $this->addFieldsToQuery($params, ['description', 'costs', 'tags'], $optional);
 
         $response = $this->post('/programs.json', ['form_params' => $params]);
         $response->checkIsSuccess();
@@ -205,27 +169,11 @@ class Program implements EndpointInterface
     public function update(int $id, array $fields = []): Entity
     {
         $params = [];
-        foreach (['name', 'description', 'costsDestructiveUpdate'] as $field) {
-            if (isset($fields[$field])) {
-                $params[$field] = $fields[$field];
-            }
-        }
-        if (isset($fields['costs'])) {
-            $params['costs'] = json_encode(
-                array_map(
-                    static fn(Cost $cost) => $cost->asJson(),
-                    $fields['costs']
-                )
-            );
-        }
-        if (isset($fields['tags'])) {
-            $params['tags'] = json_encode(
-                array_map(
-                    static fn(Tag $tag) => $tag->idAsJson(),
-                    $fields['tags']
-                )
-            );
-        }
+        $this->addFieldsToQuery(
+            $params,
+            ['name', 'description', 'costsDestructiveUpdate', 'costs', 'tags'],
+            $fields
+        );
         if (empty($params)) {
             throw new InvalidArgumentException('Missing fields to update.');
         }

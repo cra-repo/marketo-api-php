@@ -43,11 +43,8 @@ class Folder implements EndpointInterface
     public function queryByName(string $name, array $optional = []): ?Entity
     {
         $query = ['name' => $name];
-        foreach (['type', 'root', 'workSpace'] as $field) {
-            if (isset($optional[$field])) {
-                $query[$field] = $optional[$field];
-            }
-        }
+        $this->addFieldsToQuery($query, ['type', 'root', 'workSpace'], $optional);
+
         $response = $this->get('/folder/byName.json', ['query' => $query]);
         $response->checkIsSuccess();
         $result = $response->singleValidResult();
