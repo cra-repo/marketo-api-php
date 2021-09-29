@@ -135,6 +135,7 @@ class Email implements EndpointInterface
      * @param string $name
      * @param int $templateId
      * @param FolderId $folderId
+     * phpcs:ignore Generic.Files.LineLength.TooLong
      * @param array{subject: string, fromName: string, fromEmail: string, replyEmail: string, operational: bool|null} $optional
      * @return Entity
      *
@@ -187,6 +188,7 @@ class Email implements EndpointInterface
      * Update subject, fromEmail, fromName, and/or replyTo.
      *
      * @param int $id Email ID
+     * phpcs:ignore Generic.Files.LineLength.TooLong
      * @param array{subject: Text|DynamicContent, fromEmail: Text|DynamicContent, fromName: Text|DynamicContent, replyTo: Text|DynamicContent} $fields
      * @return int Returns Email ID
      * @throws Exception
