@@ -27,11 +27,6 @@ trait ApiTrait
         return $this->apiObject->name;
     }
 
-    public function description(): string
-    {
-        return $this->apiObject->description;
-    }
-
     public function createdAt(): DateTime
     {
         return new DateTime($this->apiObject->createdAt);

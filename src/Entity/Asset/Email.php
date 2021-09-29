@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Cra\MarketoApi\Entity\Asset;
 
-use Cra\MarketoApi\Entity\ApiTrait;
+use Cra\MarketoApi\Entity\ApiTraitWithDescription;
 use Cra\MarketoApi\Entity\GenericValue;
 
 class Email
 {
-    use ApiTrait;
+    use ApiTraitWithDescription;
 
     public function url(): ?string
     {

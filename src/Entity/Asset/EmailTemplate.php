@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Cra\MarketoApi\Entity\Asset;
 
-use Cra\MarketoApi\Entity\ApiTrait;
+use Cra\MarketoApi\Entity\ApiTraitWithDescription;
 
 class EmailTemplate
 {
-    use ApiTrait;
+    use ApiTraitWithDescription;
 
     public function folder(): ?BasicFolder
     {

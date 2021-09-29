@@ -29,7 +29,7 @@ trait AssetTrait
      *
      * @return Response
      */
-    public function get(string $uri, array $options = []): Response
+    protected function get(string $uri, array $options = []): Response
     {
         return $this->client
             ->ensureTokenValid()
@@ -44,10 +44,37 @@ trait AssetTrait
      *
      * @return Response
      */
-    public function post(string $uri, array $options = []): Response
+    protected function post(string $uri, array $options = []): Response
     {
         return $this->client
             ->ensureTokenValid()
             ->post("/asset/v1$uri", $options);
+    }
+
+    /**
+     * Add optional pagination fields to query.
+     *
+     * @param array $query Associative array of query fields.
+     * @param array $values Associative array of values to add to the query.
+     */
+    protected function addOptionalPaginationFieldsToQuery(array &$query, array $values = []): void
+    {
+        $this->addFieldsToQuery($query, ['maxReturn', 'offset'], $values);
+    }
+
+    /**
+     * Explicitly add optional fields to query.
+     *
+     * @param array $query Associative array of query fields (or form parameters).
+     * @param string[] $fields List of possible fields to add to the query.
+     * @param array $values Associative array of values to add to the query.
+     */
+    protected function addFieldsToQuery(array &$query, array $fields, array $values = []): void
+    {
+        foreach ($fields as $field) {
+            if (isset($values[$field])) {
+                $query[$field] = $values[$field];
+            }
+        }
     }
 }
