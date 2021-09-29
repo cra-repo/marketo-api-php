@@ -51,9 +51,11 @@ class Program
         return array_map(static fn(object $tag) => new Tag($tag), $this->apiObject->tags ?? []);
     }
 
-    public function costs(): ?object
+    /**
+     * @return Cost[]
+     */
+    public function costs(): array
     {
-        // @todo Replace with proper entity class.
-        return $this->apiObject->costs;
+        return array_map(static fn(object $cost) => new Cost($cost), $this->apiObject->costs ?? []);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cra\MarketoApi\Entity\Asset;
 
 class Tag
@@ -19,6 +21,11 @@ class Tag
     public function tagValue(): ?string
     {
         return $this->apiObject->tagValue ?? null;
+    }
+
+    public function idAsJson(): string
+    {
+        return json_encode(['tagType' => $this->tagType(), 'tagValue' => $this->tagValue()]);
     }
 
     public function required(): ?bool
