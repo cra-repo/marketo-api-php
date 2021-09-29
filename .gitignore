@@ -8,5 +8,10 @@
 # Dependencies
 vendor
 
+# Configuration
+.env
+.env*
+config.json
+
 # Miscelanious
 /index.php
