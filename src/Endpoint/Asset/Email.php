@@ -200,15 +200,15 @@ class Email implements EndpointInterface
     /**
      * Update Editable Section of the Email.
      *
-     * @param int $id
-     * @param int $htmlId
+     * @param int $id Email ID
+     * @param string $htmlId
      * @param Text|DynamicContent $value
      * @param string $textValue
      * @return int
      *
      * @throws Exception
      */
-    public function updateEditableSection(int $id, int $htmlId, $value, string $textValue = ''): int
+    public function updateEditableSection(int $id, string $htmlId, $value, string $textValue = ''): int
     {
         $params = ['type' => $value->type()];
         if ($value instanceof Text) {
