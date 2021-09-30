@@ -23,7 +23,7 @@ class Channel implements EndpointInterface
         $query = [];
         $this->addFieldsToQuery($query, ['maxReturn', 'offset'], $optional);
 
-        $response = $this->get('/channels.json', $query);
+        $response = $this->get('/channels.json', ['query' => $query]);
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
@@ -45,7 +45,7 @@ class Channel implements EndpointInterface
         $query = ['name' => $name];
         $this->addFieldsToQuery($query, ['maxReturn', 'offset'], $optional);
 
-        $response = $this->get('/channel/byName.json', $query);
+        $response = $this->get('/channel/byName.json', ['query' => $query]);
         $response->checkIsSuccess();
 
         return $response->isResultValid() ?
