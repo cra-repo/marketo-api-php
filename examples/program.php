@@ -9,7 +9,9 @@ use Cra\MarketoApi\Endpoint\Asset\Program;
 use Cra\MarketoApi\Entity\Asset\Tag;
 use Kint\Kint as K;
 
-$config = json_decode(file_get_contents('../config.json'));
+require_once '../vendor/autoload.php';
+
+$config = json_decode(file_get_contents('../config.json'), true);
 $client = (new Client($config))->authenticate();
 $programEndpoint = new Program($client);
 

@@ -8,7 +8,9 @@ use Cra\MarketoApi\Client;
 use Cra\MarketoApi\Endpoint\Asset\Tag;
 use Kint\Kint as K;
 
-$config = json_decode(file_get_contents('../config.json'));
+require_once '../vendor/autoload.php';
+
+$config = json_decode(file_get_contents('../config.json'), true);
 $client = (new Client($config))->authenticate();
 $tagEndpoint = new Tag($client);
 
