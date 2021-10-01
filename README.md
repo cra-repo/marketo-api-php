@@ -10,7 +10,7 @@ In your project's `composer.json` add to `repositories` section the following:
 ```json
 {
   "type": "vcs",
-  "url": "git@github.com:cra/marketo-api-php.git"
+  "url": "git@github.com:cra-repo/marketo-api-php.git"
 }
 ```
 
