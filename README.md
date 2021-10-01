@@ -5,17 +5,6 @@ Unofficial Marketo API PHP library.
 
 ## Composer
 
-In your project's `composer.json` add to `repositories` section the following:
-
-```json
-{
-  "type": "vcs",
-  "url": "git@github.com:cra-repo/marketo-api-php.git"
-}
-```
-
-and then from console:
-
 ```
 composer require cra/marketo-api
 ```
