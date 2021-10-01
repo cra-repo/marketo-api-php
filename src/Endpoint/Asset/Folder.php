@@ -34,7 +34,7 @@ class Folder implements EndpointInterface
      * Query Folder by name.
      *
      * @param string $name
-     * @param array{type: string, root: int, workSpace: string} $optional
+     * @param array{type: string, root: FolderId, workSpace: string} $optional
      * @return Entity|null
      *
      * @throws Exception
