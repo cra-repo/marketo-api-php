@@ -2,5 +2,16 @@
 *~
 .DS_Store
 
+# IDE files
+.idea
+
 # Dependencies
 vendor
+
+# Configuration
+.env
+.env*
+config.json
+
+# Miscelanious
+/index.php
