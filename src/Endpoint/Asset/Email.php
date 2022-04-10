@@ -146,6 +146,47 @@ class Email implements EndpointInterface
     }
 
     /**
+     * Approves the current draft of an email. Required Permissions: Approve Assets
+     * @link https://developers.marketo.com/rest-api/endpoint-reference/asset-endpoint-reference/#!/Emails/approveDraftUsingPOST
+     *
+     * @param int $id
+     * @return Entity
+     * @throws Exception
+     */
+    public function approveDraft(int $id): Entity
+    {
+        $response = $this->post("/email/$id/approveDraft.json", ['form_params' => []]);
+        $response->checkIsSuccess();
+        $response->checkIsResultValid();
+
+        return new Entity($response->result(0));
+    }
+
+    /**
+     * Sends a sample email to the given email address. Leads may be impersonated to populate data for tokens and dynamic content. Required Permissions: Read-Write Assets
+     * @link https://developers.marketo.com/rest-api/endpoint-reference/asset-endpoint-reference/#!/Emails/sendSampleEmailUsingPOST
+     *
+     * @param int $id
+     * @param array{emailAddress : string, leadId: ?string} $fields
+     * @return Entity
+     * @throws Exception
+     */
+    public function sendSample(int $id, array $fields = []): Entity
+    {
+        $params = [];
+        $this->addFieldsToQuery($params, ['emailAddress', 'leadId'], $fields);
+        if (empty($params)) {
+            throw new InvalidArgumentException('Missing required emailAddress and/or leadId.');
+        }
+
+        $response = $this->post("/email/$id/sendSample.json", ['form_params' => $params]);
+        $response->checkIsSuccess();
+        $response->checkIsResultValid();
+
+        return $response->result(0);
+    }
+
+    /**
      * Update Email's name and/or description.
      *
      * @param int $id
