@@ -151,7 +151,8 @@ class Program implements EndpointInterface
     }
 
     /**
-     * Update Program.
+     * Updates the target program's metadata. Required Permissions: Read-Write Assets
+     * @link https://developers.marketo.com/rest-api/endpoint-reference/asset-endpoint-reference/#!/Programs/updateProgramUsingPOST
      *
      * Note: When updating program costs, to append new costs, simply add them to your costs array.
      * To perform a destructive update, pass your new costs, along with the parameter
@@ -160,7 +161,7 @@ class Program implements EndpointInterface
      *
      * @param int $id
      * phpcs:ignore Generic.Files.LineLength.TooLong
-     * @param array{description: ?string, name: ?string, costs: ?array, tags: ?array, costsDestructiveUpdate: ?bool} $fields
+     * @param array{description: ?string, name: ?string, costs: ?array, tags: ?array, costsDestructiveUpdate: ?bool, startDate: ?string} $fields
      * @return Entity
      *
      * @throws Exception
@@ -171,7 +172,7 @@ class Program implements EndpointInterface
         $params = [];
         $this->addFieldsToQuery(
             $params,
-            ['name', 'description', 'costsDestructiveUpdate', 'costs', 'tags'],
+            ['name', 'description', 'costsDestructiveUpdate', 'costs', 'tags', 'startDate'],
             $fields
         );
         if (empty($params)) {
@@ -186,11 +187,12 @@ class Program implements EndpointInterface
     }
 
     /**
-     * Approve Program.
+     * Approves the target program. Only valid for unapproved email programs. Required Permissions: Read-Write Assets
+     * @link https://developers.marketo.com/rest-api/endpoint-reference/asset-endpoint-reference/#!/Programs/approveProgramUsingPOST
      *
      * Email Programs may be approved or unapproved remotely, which will cause
      * the program to run at the given startDate and conclude at the given endDate.
-     * Both of these must be set to approve the program, as well as having a valid
+     * Both of these must be set to approve the program, and having a valid
      * and approved email and smart list configured via the UI.
      *
      * @param int $id Program ID
@@ -208,11 +210,12 @@ class Program implements EndpointInterface
     }
 
     /**
-     * Unapprove Program.
+     * Unapproves the target program. Only valid for approved email programs. Required Permissions: Read-Write Assets
+     * @link https://developers.marketo.com/rest-api/endpoint-reference/asset-endpoint-reference/#!/Programs/unapproveProgramUsingPOST
      *
      * Email Programs may be approved or unapproved remotely, which will cause
      * the program to run at the given startDate and conclude at the given endDate.
-     * Both of these must be set to approve the program, as well as having a valid
+     * Both of these must be set to approve the program, and having a valid
      * and approved email and smart list configured via the UI.
      *
      * @param int $id Program ID
