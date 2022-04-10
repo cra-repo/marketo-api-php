@@ -168,10 +168,10 @@ class Email implements EndpointInterface
      *
      * @param int $id
      * @param array{emailAddress : string, leadId: ?string} $fields
-     * @return Entity
+     * @return string
      * @throws Exception
      */
-    public function sendSample(int $id, array $fields = []): Entity
+    public function sendSample(int $id, array $fields = []): string
     {
         $params = [];
         $this->addFieldsToQuery($params, ['emailAddress', 'leadId'], $fields);
