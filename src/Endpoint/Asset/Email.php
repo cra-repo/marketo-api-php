@@ -261,7 +261,9 @@ class Email implements EndpointInterface
             $params['textValue'] = $textValue;
         }
 
-        $response = $this->post("/email/$id/content/$htmlId.json", ['form_params' => $params]);
+        $response = $this->post("/email/$id/content/$htmlId.json", [
+            'form_params' => $params,
+            'headers' => ['Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8']]);
         $response->checkIsSuccess();
         $response->checkIsResultValid();
 
