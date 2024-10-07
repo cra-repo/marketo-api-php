@@ -52,7 +52,7 @@ class SmartCampaign implements EndpointInterface
      * Browse for Smart Campaigns.
      *
      * phpcs:ignore Generic.Files.LineLength.TooLong
-     * @param array{earliestUpdatedAt: DateTime, latestUpdatedAt: DateTime, folder: FolderId, maxReturn: int, offset: int, isArchive: bool} $fields
+     * @param array{earliestUpdatedAt?: DateTime, latestUpdatedAt?: DateTime, folder?: FolderId, maxReturn?: int, offset?: int, isArchive?: bool} $fields
      * @return Entity[]
      *
      * @throws Exception
@@ -102,7 +102,7 @@ class SmartCampaign implements EndpointInterface
      * Update Smart Campaign.
      *
      * @param int $id
-     * @param array{name: string, description: string} $fields
+     * @param array{name?: string, description?: string} $fields
      * @return Entity
      * @throws Exception
      */

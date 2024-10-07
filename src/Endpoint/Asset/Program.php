@@ -77,7 +77,7 @@ class Program implements EndpointInterface
      * for returning programs which were either updated or initially created within the given range.
      *
      * phpcs:ignore Generic.Files.LineLength.TooLong
-     * @param array{status: ?string, maxReturn: ?int, offset: ?int, earliestUpdatedAt: ?DateTime, latestUpdatedAt: ?DateTime } $optional
+     * @param array{status?: ?string, maxReturn?: ?int, offset?: ?int, earliestUpdatedAt?: ?DateTime, latestUpdatedAt?: ?DateTime} $optional
      * @return Entity[]
      *
      * @throws Exception
@@ -103,7 +103,7 @@ class Program implements EndpointInterface
      * Query Programs by Tag.
      *
      * @param Tag $tag
-     * @param array{maxReturn: ?int, offset: ?int} $optional
+     * @param array{maxReturn?: ?int, offset?: ?int} $optional
      * @return Entity[]
      *
      * @throws Exception
@@ -128,7 +128,7 @@ class Program implements EndpointInterface
      * @param string $name
      * @param string $type
      * @param string $channel
-     * @param array{description: ?string, costs: ?array, tags: ?array} $optional
+     * @param array{description?: ?string, costs?: ?array, tags?: ?array} $optional
      * @return Entity
      *
      * @throws Exception
@@ -161,7 +161,7 @@ class Program implements EndpointInterface
      *
      * @param int $id
      * phpcs:ignore Generic.Files.LineLength.TooLong
-     * @param array{description: ?string, name: ?string, costs: ?array, tags: ?array, costsDestructiveUpdate: ?bool, startDate: ?string} $fields
+     * @param array{description?: ?string, name?: ?string, costs?: ?array, tags?: ?array, costsDestructiveUpdate?: ?bool, startDate?: ?string} $fields
      * @return Entity
      *
      * @throws Exception

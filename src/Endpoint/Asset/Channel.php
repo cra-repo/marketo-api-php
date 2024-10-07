@@ -13,7 +13,7 @@ class Channel implements EndpointInterface
     /**
      * Browse Channels.
      *
-     * @param array{maxReturn: int, offset: int} $optional
+     * @param array{maxReturn?: int, offset?: int} $optional
      * @return Entity[]
      *
      * @throws Exception
@@ -35,7 +35,7 @@ class Channel implements EndpointInterface
      * Query Channels by name.
      *
      * @param string $name
-     * @param array{maxReturn: int, offset: int} $optional
+     * @param array{maxReturn?: int, offset?: int} $optional
      * @return Entity[]
      *
      * @throws Exception
