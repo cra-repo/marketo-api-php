@@ -60,7 +60,7 @@ class Email implements EndpointInterface
     /**
      * Browse Folder for children Folders.
      *
-     * @param array{status: string, folder: FolderId, maxReturn: int, offset: int} $filters
+     * @param array{status?: string, folder?: FolderId, maxReturn?: int, offset?: int} $filters
      * @return Entity[]
      *
      * @throws Exception
@@ -167,7 +167,7 @@ class Email implements EndpointInterface
      * @link https://developers.marketo.com/rest-api/endpoint-reference/asset-endpoint-reference/#!/Emails/sendSampleEmailUsingPOST
      *
      * @param int $id
-     * @param array{emailAddress : string, leadId: ?string} $fields
+     * @param array{emailAddress?: string, leadId?: ?string} $fields
      * @return string
      * @throws Exception
      */
@@ -190,7 +190,7 @@ class Email implements EndpointInterface
      * Update Email's name and/or description.
      *
      * @param int $id
-     * @param array{name: string, description: string} $fields
+     * @param array{name?: string, description?: string} $fields
      * @return Entity
      *
      * @throws Exception
@@ -216,7 +216,7 @@ class Email implements EndpointInterface
      *
      * @param int $id Email ID
      * phpcs:ignore Generic.Files.LineLength.TooLong
-     * @param array{subject: Text|DynamicContent, fromEmail: Text|DynamicContent, fromName: Text|DynamicContent, replyTo: Text|DynamicContent} $fields
+     * @param array{subject?: Text|DynamicContent, fromEmail?: Text|DynamicContent, fromName?: Text|DynamicContent, replyTo?: Text|DynamicContent} $fields
      * @return int Returns Email ID
      * @throws Exception
      * @throws InvalidArgumentException

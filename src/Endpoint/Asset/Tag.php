@@ -15,7 +15,7 @@ class Tag implements EndpointInterface
     /**
      * Get Tags.
      *
-     * @param array{maxReturn: ?int, offset: ?int} $optional
+     * @param array{maxReturn?: ?int, offset?: ?int} $optional
      * @return Entity[]
      *
      * @throws Exception
