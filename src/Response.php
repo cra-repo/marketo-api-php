@@ -78,7 +78,7 @@ class Response
             throw new Exception(
                 sprintf(
                     'Invalid response result: %s',
-                    var_export($this->response->result ?? null, true)
+                    serialize($this->response->result ?? null)
                 )
             );
         }
