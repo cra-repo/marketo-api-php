@@ -51,7 +51,7 @@ class Response
             throw new Exception(
                 sprintf(
                     'Errors during Folder API call: %s',
-                    var_export($this->response->errors ?? [], true)
+                    serialize($this->response->errors ?? [])
                 )
             );
         }
