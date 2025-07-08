@@ -187,22 +187,26 @@ class Email implements EndpointInterface
     }
 
     /**
-     * Update Email's name and/or description.
+     * Update fields of an Email asset.
      *
-     * @param int $id
-     * @param array{name?: string, description?: string} $fields
-     * @return Entity
+     * @param int $id Email asset ID.
+     * @param array<string, mixed> $fields Fields to update (e.g., name, description, preHeader).
+     *
+     * @return Entity Updated Email entity.
      *
      * @throws Exception
      * @throws InvalidArgumentException
+     *
+     * @see https://developer.adobe.com/marketo-apis/api/asset/#operation/updateEmailUsingPOST
      */
     public function update(int $id, array $fields = []): Entity
     {
-        $params = [];
-        $this->addFieldsToQuery($params, ['name', 'description'], $fields);
-        if (empty($params)) {
-            throw new InvalidArgumentException('Missing name and/or description.');
+        if (empty($fields)) {
+            throw new InvalidArgumentException('Missing fields for update.');
         }
+
+        $params = [];
+        $this->addFieldsToQuery($params, array_keys($fields), $fields);
 
         $response = $this->post("/email/$id.json", ['form_params' => $params]);
         $response->checkIsSuccess();
