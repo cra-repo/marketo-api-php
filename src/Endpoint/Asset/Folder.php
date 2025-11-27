@@ -150,4 +150,37 @@ class Folder implements EndpointInterface
 
         return $response->result(0)->id;
     }
+
+    /**
+     * Creates or updates a token within a Marketo Folder or Program.
+     *
+     * @link https://developer.adobe.com/marketo-apis/api/asset/#operation/addTokenTOFolderUsingPOST
+     *
+     * @param int $id The ID of the Folder or Program where the token will be created.
+     * @param string $tokenName The name of the token.
+     * @param string $value The value of the token.
+     * @param string $type The token type.
+     * @param string $folderType The container type for the token. Must be either 'Folder' or 'Program'.
+     *
+     * @return void
+     *
+     * @throws Exception If the Marketo API request fails or returns an error response.
+     */
+    public function updateToken(
+        int $id,
+        string $tokenName,
+        string $value,
+        string $type = 'text',
+        string $folderType = 'Folder'
+    ): void {
+        $params = [
+            'name' => $tokenName,
+            'value' => $value,
+            'type' => $type,
+            'folderType' => $folderType,
+        ];
+
+        $response = $this->post("/folder/$id/tokens.json", ['form_params' => $params]);
+        $response->checkIsSuccess();
+    }
 }
