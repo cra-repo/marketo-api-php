@@ -93,4 +93,14 @@ class Response
     {
         return !empty($this->response->result) && is_array($this->response->result);
     }
+
+    /**
+     * Returns the next page token, indicating that there is more results.
+     *
+     * @return string|null
+     */
+    public function nextPageToken(): string|null
+    {
+        return !empty($this->response->nextPageToken) ? $this->response->nextPageToken : null;
+    }
 }
