@@ -57,6 +57,19 @@ class Response
         }
     }
 
+     /**
+     * Get the raw errors array from the API response.
+     *
+     * Each entry is an error object exposing at least `code` and `message`, as returned by the Marketo
+     * REST API. Returns an empty array when the response carries no errors.
+     *
+     * @return array<int, object>
+     */
+    public function errors(): array
+    {
+        return is_array($this->response->errors ?? null) ? $this->response->errors : [];
+    }
+
     /**
      * Checks that API response is successful.
      *
