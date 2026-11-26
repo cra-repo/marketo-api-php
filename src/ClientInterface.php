@@ -71,6 +71,9 @@ interface ClientInterface
     /**
      * Do API request.
      *
+     * If Marketo rejects the access token as invalid or expired (error 601/602), the client re-authenticates
+     * and retries the request exactly once.
+     *
      * @param string $method
      * @param string $uri
      * @param array $options
