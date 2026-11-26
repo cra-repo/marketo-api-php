@@ -16,6 +16,11 @@ use Psr\Http\Client\ClientInterface as HttpClientInterface;
  */
 class Client implements ClientInterface
 {
+    /**
+     * Marketo error codes returned when the access token is invalid (601) or has expired (602).
+     */
+    private const TOKEN_REJECTED_ERROR_CODES = ['601', '602'];
+
     private string $restBaseUrl = '';
 
     private string $identityBaseUrl = '';
@@ -107,10 +112,10 @@ class Client implements ClientInterface
         if (empty($body->access_token) || !is_string($body->access_token)) {
             throw new Exception('Empty/incorrect access token.');
         }
-        $this->accessToken = $body->access_token;
-        if (empty($body->expires_in) || !is_int($body->expires_in)) {
+        if (!isset($body->expires_in) || !is_int($body->expires_in) || $body->expires_in < 0) {
             throw new Exception('Empty/incorrect expires_in value.');
         }
+        $this->accessToken = $body->access_token;
         $this->tokenExpiresAt = (new DateTime())->add(new \DateInterval("PT{$body->expires_in}S"));
 
         return $this;
@@ -175,10 +180,30 @@ class Client implements ClientInterface
         if (empty($this->accessToken)) {
             throw new Exception('Missing token. Use authenticate method first.');
         }
-        if ($this->hasTokenExpired()) {
-            throw new Exception('Token has expired!');
+
+        $response = $this->send($method, $uri, $options);
+        if ($this->isTokenRejected($response)) {
+            $this->authenticate();
+            $response = $this->send($method, $uri, $options);
         }
 
+        return $response;
+    }
+
+    /**
+     * Sends a single API request with the current access token.
+     *
+     * @param string $method
+     * @param string $uri
+     * @param array $options
+     *
+     * @return Response
+     *
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    private function send(string $method, string $uri, array $options): Response
+    {
         $options['headers'] = $options['headers'] ?? [];
         $options['headers']['Authorization'] = "Bearer $this->accessToken";
         $response = $this->client->request($method, $this->restBaseUrl . $uri, $options);
@@ -193,5 +218,27 @@ class Client implements ClientInterface
         }
 
         return new Response(json_decode((string)$response->getBody()));
+    }
+
+    /**
+     * Checks whether Marketo rejected the request because of an invalid or expired access token.
+     *
+     * @param Response $response
+     *
+     * @return bool
+     */
+    private function isTokenRejected(Response $response): bool
+    {
+        foreach ($response->errors() as $error) {
+            if (
+                is_object($error)
+                && isset($error->code)
+                && in_array((string)$error->code, self::TOKEN_REJECTED_ERROR_CODES, true)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
